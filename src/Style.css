@@ -1,36 +1,13 @@
-.html {
-  background-color: #282c34;
-  padding: 5%
+#root {
+  background-color: darkslategrey;
 }
 
 .App {
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 10s alternate;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
 .App-link {
-  color: #61dafb;
+  color: #27697b;
 }
 
 .Centered-text {
@@ -38,18 +15,8 @@
   justify-self: center;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(60deg);
-  }
-
-}
-
 body {
-  background-color: #282c34;
+  background-color: rgb(24, 81, 100);
   display: flex;
   justify-content: center;
 }
@@ -57,28 +24,81 @@ body {
 canvas{  
   background-color: white;
   border: solid black 2px;
+  margin-left: 10px;
+  margin-right: 10px;
 }
 
-nav{
-  margin-top: 4%;
-  height: 80px;
-  background-color: rgb(24, 81, 100);
+nav {
+  flex-direction: column;
   color: whitesmoke;
   display: flex;
   justify-content: center;
   text-align: center;
   font-family: 'Arial';
-  font-size: 18;
+  font-size: 28px;
 }
 
-columns{
-  display: flex;
-  justify-content: left;
+
+.settings-button{
+  padding: 5px;
+  color: rgb(0, 0, 0);
+  border-radius: 5px;
+  background-color: rgb(75, 88, 230);
+  color: whitesmoke;
+  font-size: medium;
+  width: 100%;
+  height: 55px;
+  font-size: 1em;
 }
-settings{
-  background-color: rgb(24, 81, 100);
-  height: 100%;
-  border: 2px solid #282c34;
+.nav-button{
+  margin-top: 5px;
+  margin-bottom: 10px;
+  padding: 5px;
+  color: rgb(0, 0, 0);
+  border-radius: 15px;
+  background-color: rgb(28, 34, 99);
+  color: whitesmoke;
+  font-size: medium;
+  width: 100%;
+  height: 55px;
+  font-size: 18px;
+}
+.columns{
+  display: flex;
+  flex-direction: row;
+}
+
+.vertical{
+  display: flex;
+  flex-direction: column;
+}
+
+.horizontal{
+  display: flex;
+  flex-direction: row;
+}
+
+.tickermarks{
+  text-align: center;
+  font-size: .1vw;
+}
+
+.settings{
+  display: flex;
+  flex-direction: column;
+  height: 600px;
+  width: 150px;
+  color: whitesmoke;
+}
+
+.info{
+  display: flex;
+  flex-direction: column;
   height: 600px;
   color: whitesmoke;
+  width: 150px;
+}
+
+h1 {
+  margin: 5px;
 }

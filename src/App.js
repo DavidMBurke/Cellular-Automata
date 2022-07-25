@@ -6,14 +6,42 @@ function App() {
   return (
     <div>
       <nav>
-        <h1>Exploration of Cellular Automata</h1>
+        <h1 className={"banner"}>Exploration of Cellular Automata</h1>
+        <div className="horizontal">
+          <button className={"nav-button"}>Falling Sand</button>
+          <button className={"nav-button"}>Conway's Game of Life</button>
+          <button className={"nav-button"}>
+            Wolfram's 1-Dimensional Cellular Automata
+          </button>
+          <button className={"nav-button"}>Langston's Ant</button>
+        </div>
       </nav>
-      <columns>
-      <Canvas id="learningCanvas" />
-      <settings>
-        This is where settings will go
-      </settings>
-      </columns>
+      <div className={"columns"}>
+        <div className={"info"}>
+          <button className={"settings-button"}>Save</button>
+          <button className={"settings-button"}>Load</button>
+        </div>
+        <Canvas id="learningCanvas" />
+
+        <div className={"settings"}>
+          <button className={"settings-button"}>Start</button>
+          <button className={"settings-button"}>Stop</button>
+          <button className={"settings-button"}>Step</button>
+          <h3>Speed: *val* FPS</h3>
+          <div>
+            <div class="slidecontainer">
+              <input
+                type="range"
+                min="0"
+                max="25"
+                value="5"
+                class="slider"
+                id="speedSlider"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
