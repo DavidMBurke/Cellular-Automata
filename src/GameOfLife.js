@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 export default function GameOfLife() {
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
@@ -6,9 +6,12 @@ export default function GameOfLife() {
   const height = 800;
   let grid = makeGrid(width * 0.1, height * 0.1);
   let nextGrid = makeGrid(width * 0.1, height * 0.1);
-  let fps = 0
+  let saveGrid = makeGrid(width * 0.1, height * 0.1)
+  const [fps, setFps] = useState(15);
+  let interval;
+  let animated = false;
 
-  useEffect(() => { 
+  useEffect(() => {
     const canvas = canvasRef.current;
     canvas.width = width;
     canvas.height = height;
@@ -45,43 +48,41 @@ export default function GameOfLife() {
   };
 
   const animate = () => {
-      let interval = 1000/fps;
-      setInterval(iterate(grid, nextGrid, contextRef.current),interval)
-  }
+    if (animated) return;
+    interval = setInterval(() => {
+      iterate(grid, nextGrid, contextRef.current);
+    }, 1000 / fps);
+    animated = true;
+  };
 
-  const scanOnMouseOver = ({ nativeEvent }) => {
-    const { offsetX, offsetY } = nativeEvent;
-    let x = Math.floor(offsetX * 0.1);
-    let y = Math.floor(offsetY * 0.1);
-    console.log(scan(grid, x, y))
-  }
-
-  function scanAll() {
-    iterate();
-    let valueArray = makeGrid(10, 10);
-    let neighborArray = makeGrid(10, 10);
-    drawGrid(grid, contextRef.current);
-    for (let i = 0; i < 10; i++) {
-      for (let j = 0; j < 10; j++) {
-        neighborArray[i][j] = scan(grid, i, j);
-        valueArray[i][j] = grid[i][j];
-      }
-    }
-    console.table(valueArray);
-    console.table(neighborArray);
-  }
+  const clearAnimation = () => {
+    clearInterval(interval);
+    animated = false;
+  };
 
   return (
     <div className={"columns"}>
       <div className={"info"}>
-        <button className={"settings-button"}>Save</button>
-        <button className={"settings-button"}>Load</button>
+        <button className={"settings-button"} onClick={() => {
+            equalize(saveGrid, grid);
+        }}>Save</button>
+        <button className={"settings-button"} onClick={() => {
+            equalize(grid, saveGrid);
+            drawGrid(saveGrid, canvasRef.current)
+        }}>Load</button>
       </div>
-      <canvas id="learningCanvas" onMouseDown={draw} 
-      //onMouseMove={scanOnMouseOver} 
-      ref={canvasRef} />
+
+      <canvas id="learningCanvas" onMouseDown={draw} ref={canvasRef} />
+
       <div className={"settings"}>
-        <button className={"settings-button"}>Start / Stop</button>
+        <button
+          className={"settings-button"}
+          onClick={() => {
+            animated ? clearAnimation() : animate();
+          }}
+        >
+          Start / Stop
+        </button>
         <button
           className={"settings-button"}
           onClick={() => {
@@ -112,11 +113,15 @@ export default function GameOfLife() {
             <input
               id="speedSlider"
               type="range"
-              min={0}
-              max={25}
-              defaultValue={0}
+              min={1}
+              max={30}
+              step={1}
+              defaultValue={fps}
               className="slider"
-              onChange={(event)=>{fps=event.target.value; animate()}}
+              onChange={(evt) => {
+                clearAnimation();
+                setFps(evt.target.value);
+              }}
             />
           </div>
         </div>
@@ -139,7 +144,7 @@ function makeGrid(cols, rows) {
   for (let i = 0; i < arr.length; i++) {
     arr[i] = new Array(rows);
     for (let j = 0; j < arr[0].length; j++) {
-        arr[i][j] = 0;
+      arr[i][j] = 0;
     }
   }
   return arr;
@@ -208,9 +213,9 @@ function drawPixel(color, canvas, i, j) {
 }
 
 function equalize(grid, gridNext) {
-    for (let i = 0; i < grid.length; i++) {
-        for (let j = 0; j < grid[0].length; j++) {
-            grid[i][j] = gridNext[i][j];
-        }
+  for (let i = 0; i < grid.length; i++) {
+    for (let j = 0; j < grid[0].length; j++) {
+      grid[i][j] = gridNext[i][j];
     }
+  }
 }

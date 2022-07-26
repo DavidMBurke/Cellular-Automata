@@ -1,6 +1,7 @@
 import React from "react";
 import "./Style.css";
-import GameOfLife from "./GameOfLife.js";
+//import GameOfLife from "./GameOfLife.js";
+import LangtonsAnt from "./LangtonsAnt";
 
 function App() {
   return (
@@ -16,7 +17,8 @@ function App() {
           <button className={"nav-button"}>Langston's Ant</button>
         </div>
       </nav>
-        <GameOfLife id="learningCanvas" />
+      <LangtonsAnt id="learningCanvas" />
+      {/* <GameOfLife id="learningCanvas" /> */}
     </div>
   );
 }

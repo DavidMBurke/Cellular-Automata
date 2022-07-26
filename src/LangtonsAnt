@@ -1,0 +1,176 @@
+import React, { useState, useEffect, useRef } from "react";
+export default function LangtonsAnt() {
+  const canvasRef = useRef(null);
+  const contextRef = useRef(null);
+  const width = 1200;
+  const height = 800;
+  let grid = makeGrid(width, height);
+  const ants = [];
+  const [fps, setFps] = useState(15);
+  let interval;
+  let animated = false;
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    canvas.width = width;
+    canvas.height = height;
+    canvas.style.width = width;
+    canvas.style.height = height;
+
+    const context = canvas.getContext("2d");
+    context.scale(1, 1);
+    context.lineCap = "butt";
+    context.strokeStyle = "black";
+    context.lineWidth = 1;
+    contextRef.current = context;
+  }, []);
+
+  const createAnt = ({ nativeEvent }) => {
+    const { offsetX, offsetY } = nativeEvent;
+    let x = offsetX;
+    let y = offsetY;
+
+    ants.push({
+      x: x,
+      y: y,
+      direction: Math.floor(Math.random() * 4),
+    });
+  };
+
+  const animate = () => {
+    if (animated) return;
+    interval = setInterval(() => {
+      iterate(ants, grid, canvasRef.current);
+    }, 1000 / fps);
+    animated = true;
+  };
+
+  const stopAnimation = () => {
+    clearInterval(interval);
+    animated = false;
+  };
+
+  return (
+    <div className={"columns"}>
+      <div className={"info"}>
+        <button className={"settings-button"}>Save</button>
+        <button className={"settings-button"}>Load</button>
+      </div>
+
+      <canvas id="learningCanvas" onMouseDown={createAnt} ref={canvasRef} />
+
+      <div className={"settings"}>
+        <button
+          className={"settings-button"}
+          onClick={() => {
+            animated ? stopAnimation() : animate();
+          }}
+        >
+          Start / Stop
+        </button>
+        <button
+          className={"settings-button"}
+          onClick={() => {
+            iterate(ants, grid, canvasRef.current);
+          }}
+        >
+          Step
+        </button>
+        <button
+          className={"settings-button"}
+          onClick={() => {
+            clear(grid, contextRef.current);
+          }}
+        >
+          Clear
+        </button>
+        <h3>Speed: {`${fps}`} FPS</h3>
+        <div>
+          <div className="slidecontainer">
+            <input
+              id="speedSlider"
+              type="range"
+              min={1}
+              max={30}
+              step={1}
+              defaultValue={fps}
+              className="slider"
+              onChange={(evt) => {
+                stopAnimation();
+                setFps(evt.target.value);
+              }}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const clear = (grid, canvas) => {
+  for (let i = 0; i < grid.length; i++) {
+    for (let j = 0; j < grid[0].length; j++) {
+      grid[i][j] = "white";
+      drawPixel("white", canvas, i, j);
+    }
+  }
+};
+
+function makeGrid(cols, rows) {
+  let arr = new Array(cols);
+  for (let i = 0; i < arr.length; i++) {
+    arr[i] = new Array(rows);
+    for (let j = 0; j < arr[0].length; j++) {
+      arr[i][j] = "white";
+    }
+  }
+  return arr;
+}
+
+function iterate(ants, grid, canvas) {
+  ants.forEach((ant) => {
+    switch (ant.direction) {
+      case 0: {
+        ant.y++;
+        antMove(0, 1, ant, grid, canvas);
+        break;
+      }
+      case 1: {
+        ant.x++;
+        antMove(1, 0, ant, grid, canvas);
+        break;
+      }
+      case 2: {
+        ant.y--;
+        antMove(0, -1, ant, grid, canvas);
+        break;
+      }
+      case 3: {
+        ant.x--;
+        antMove(-1, 0, ant, grid, canvas);
+        break;
+      }
+      default:
+        console.log("switch error");
+    }
+  });
+}
+
+function antMove(i, j, ant, grid, canvas) {
+  if (grid[ant.x + i][ant.y + j] === "black") {
+    ant.direction = (ant.direction += 3) % 4;
+  } else {
+    ant.direction = ant.direction++ % 4;
+  }
+  if (grid[ant.x][ant.y] === "black") {
+    grid[ant.x][ant.y] = "white";
+    drawPixel("white", canvas, ant.x, ant.y)
+  } else {grid[ant.x][ant.y] = "black";
+    drawPixel("black", canvas, ant.x, ant.y)}
+
+}
+
+function drawPixel(color, canvas, i, j) {
+  canvas.fillStyle = color;
+  canvas.fillRect(i, j, 1, 1);
+}
