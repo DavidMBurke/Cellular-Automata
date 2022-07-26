@@ -16,32 +16,7 @@ function App() {
           <button className={"nav-button"}>Langston's Ant</button>
         </div>
       </nav>
-      <div className={"columns"}>
-        <div className={"info"}>
-          <button className={"settings-button"}>Save</button>
-          <button className={"settings-button"}>Load</button>
-        </div>
         <GameOfLife id="learningCanvas" />
-
-        <div className={"settings"}>
-          <button className={"settings-button"}>Start</button>
-          <button className={"settings-button"}>Stop</button>
-          <button className={"settings-button"}>Step</button>
-          <h3>Speed: *val* FPS</h3>
-          <div>
-            <div className="slidecontainer">
-              <input
-                type="range"
-                min="0"
-                max="25"
-                value="5"
-                className="slider"
-                id="speedSlider"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }

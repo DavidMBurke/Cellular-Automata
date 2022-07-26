@@ -1,15 +1,15 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 export default function GameOfLife() {
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
-  const [isDrawing, setIsDrawing] = useState(false);
   const width = 1200;
   const height = 800;
+  let fps = 5;
   let grid = makeGrid(width * 0.1, height * 0.1);
   let nextGrid = grid;
-  randomizeGrid(grid);
+  let animated = false;
 
-  useEffect(() => {
+  useEffect(() => { 
     const canvas = canvasRef.current;
     canvas.width = width;
     canvas.height = height;
@@ -34,93 +34,132 @@ export default function GameOfLife() {
 
   const draw = ({ nativeEvent }) => {
     const { offsetX, offsetY } = nativeEvent;
-    let x = Math.floor(offsetX * .1);
-    let y = Math.floor(offsetY * .1);
+    let x = Math.floor(offsetX * 0.1);
+    let y = Math.floor(offsetY * 0.1);
     if (grid[x][y] === 1) {
-        grid[x][y] = 0;
-        drawPixel("white", contextRef.current, x, y);
+      grid[x][y] = 0;
+      drawPixel("white", contextRef.current, x, y);
     } else {
-        grid[x][y] = 1;
-        drawPixel("black", contextRef.current, x, y);    }
+      grid[x][y] = 1;
+      drawPixel("black", contextRef.current, x, y);
+    }
+    console.log(x, y);
   };
 
-  function iterate() {
-    for (let i = 0; i < grid.length; i++) {
-      for (let j = 0; j < grid[0].length; j++) {
-        let count = scan(grid, i, j);
-        let state = grid[i][j];
-        if (state === 0 && count === 3) {
-          nextGrid[i][j] = 1;
-        } else if (state === 1 && (count < 2 || count > 3)) {
-          nextGrid[i][j] = 0;
-        } else {
-          nextGrid[i][j] = state;
-        }
-      }
-    }
-    grid = nextGrid;
-    for (let i = 0; i < width * 0.1; i++) {
-      for (let j = 0; j < height * 0.1; j++) {
-        if (grid[i][j]) {
-          drawPixel("black", contextRef.current, i, j);
-        } else {
-          drawPixel("white", contextRef.current, i, j);
-        }
-      }
-    }
-    console.log(grid)
+  const scanOnMouseOver = ({ nativeEvent }) => {
+    const { offsetX, offsetY } = nativeEvent;
+    let x = Math.floor(offsetX * 0.1);
+    let y = Math.floor(offsetY * 0.1);
+    console.log(scan(grid, x, y))
   }
 
   function scanAll() {
     iterate();
-    let valueArray = makeGrid(10,10)
-    let neighborArray = makeGrid(10,10)
-    for (let i = 0; i < width * 0.1; i++) {
-        for (let j = 0; j < height * 0.1; j++) {
-          if (grid[i][j]) {
-            drawPixel("black", contextRef.current, i, j);
-          } else {
-            drawPixel("white", contextRef.current, i, j);
-          }
-        }
+    let valueArray = makeGrid(10, 10);
+    let neighborArray = makeGrid(10, 10);
+    drawGrid(grid, contextRef.current);
+    for (let i = 0; i < 10; i++) {
+      for (let j = 0; j < 10; j++) {
+        neighborArray[i][j] = scan(grid, i, j);
+        valueArray[i][j] = grid[i][j];
       }
-      for (let i = 0; i < 10; i++) {
-          for (let j = 0; j < 10; j++) {
-              neighborArray[i][j] = scan(grid, i, j)
-              valueArray[i][j] = grid[i][j]
-          }
-      }
-      console.table(valueArray);
-      console.table(neighborArray);
+    }
+    console.table(valueArray);
+    console.table(neighborArray);
   }
+
   return (
-    <canvas
-      id="learningCanvas"
-      onMouseDown={draw}
-      onKeyDown={iterate}
-      ref={canvasRef}
-    />
+    <div className={"columns"}>
+      <div className={"info"}>
+        <button className={"settings-button"}>Save</button>
+        <button className={"settings-button"}>Load</button>
+      </div>
+      <canvas id="learningCanvas" onMouseDown={draw} onMouseMove={scanOnMouseOver} ref={canvasRef} />
+      <div className={"settings"}>
+        <button className={"settings-button"} onMouseDown={()=>{animated = !animated; console.log(animated)}}>Start / Stop</button>
+        <button
+          className={"settings-button"}
+          onClick={() => {
+            iterate(grid, nextGrid, contextRef.current);
+          }}
+        >
+          Step
+        </button>
+        <button
+          className={"settings-button"}
+          onClick={() => {
+            clear(grid, contextRef.current);
+          }}
+        >
+          Clear
+        </button>
+        <button
+          className={"settings-button"}
+          onClick={() => {
+            randomizeGrid(grid, contextRef.current);
+          }}
+        >
+          Randomize
+        </button>
+        <h3>Speed: {`${fps}`} FPS</h3>
+        <div>
+          <div className="slidecontainer">
+            <input
+              type="range"
+              min={0}
+              max={25}
+              value={fps}
+              className="slider"
+              id="speedSlider"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
-
+const clear = (grid, canvas) => {
+  for (let i = 0; i < grid.length; i++) {
+    for (let j = 0; j < grid[0].length; j++) {
+      grid[i][j] = 0;
+      drawPixel("white", canvas, i, j);
+    }
+  }
+};
 
 function makeGrid(cols, rows) {
   let arr = new Array(cols);
   for (let i = 0; i < arr.length; i++) {
     arr[i] = new Array(rows);
+    for (let j = 0; j < arr[0].length; j++) {
+        arr[i][j] = 0;
+    }
   }
   return arr;
 }
 
-function randomizeGrid(arr) {
-  for (let i = 0; i < arr.length; i++) {
-    for (let j = 0; j < arr[0].length; j++) {
+function randomizeGrid(grid, canvas) {
+  for (let i = 0; i < grid.length; i++) {
+    for (let j = 0; j < grid[0].length; j++) {
       let random = Math.floor(Math.random() * 2);
       if (random < 1) {
-        arr[i][j] = 1;
+        grid[i][j] = 1;
       } else {
-        arr[i][j] = 0;
+        grid[i][j] = 0;
+      }
+    }
+  }
+  drawGrid(grid, canvas);
+}
+
+function drawGrid(grid, canvas) {
+  for (let i = 0; i < grid.length; i++) {
+    for (let j = 0; j < grid[0].length; j++) {
+      if (grid[i][j]) {
+        drawPixel("black", canvas, i, j);
+      } else {
+        drawPixel("white", canvas, i, j);
       }
     }
   }
@@ -128,18 +167,33 @@ function randomizeGrid(arr) {
 
 function scan(grid, x, y) {
   let count = 0;
-  //   let miniArray = [];
   for (let i = -1; i < 2; i++) {
     for (let j = -1; j < 2; j++) {
-      // miniArray.push(arr[x+i][y+j])
       let col = (x + i + 120) % 120;
       let row = (y + j + 80) % 80;
-      count += grid[col][row]
+      count += grid[col][row];
     }
   }
   count -= grid[x][y];
-  //   console.log("lastVal:",arr[x][y],"x,y", x, ",", y, "miniArray:", miniArray)
   return count;
+}
+
+function iterate(grid, nextGrid, canvas) {
+  for (let i = 0; i < grid.length; i++) {
+    for (let j = 0; j < grid[0].length; j++) {
+      let count = scan(grid, i, j);
+      let state = grid[i][j];
+      if (state === 0 && count === 3) {
+        nextGrid[i][j] = 1;
+      } else if (state === 1 && (count === 2 || count === 3)) {
+        nextGrid[i][j] = 1;
+      } else {
+        nextGrid[i][j] = 0;
+      }
+    }
+  }
+  grid = nextGrid;
+  drawGrid(grid, canvas);
 }
 
 function drawPixel(color, canvas, i, j) {
