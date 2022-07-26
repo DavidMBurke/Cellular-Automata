@@ -6,7 +6,7 @@ export default function Canvas() {
   const width = 800;
   const height = 600;
   let grid = makeGrid(width * 0.1, height * 0.1);
-  let nextGrid = makeGrid(width * 0.1, height * 0.1);
+  let nextGrid = grid;
   randomizeGrid(grid);
 
   useEffect(() => {
@@ -22,6 +22,10 @@ export default function Canvas() {
     context.strokeStyle = "black";
     context.lineWidth = 1;
     contextRef.current = context;
+    for (let i = 10; i < width; i += 10)
+      contextRef.current.fillRect(i, 0, 1, height);
+    for (let i = 10; i < height; i += 10)
+      contextRef.current.fillRect(0, i, width, 1);
   }, []);
 
   const startDrawing = ({ nativeEvent }) => {
@@ -73,36 +77,36 @@ function makeGrid(cols, rows) {
 function randomizeGrid(arr) {
   for (let i = 0; i < arr.length; i++) {
     for (let j = 0; j < arr[0].length; j++) {
-      arr[i][j] = Math.floor(Math.random() * 10);
+      let random = Math.floor(Math.random() * 4);
+      if (random < 1) {
+        arr[i][j] = 1;
+      } else {
+        arr[i][j] = 0;
+      }
     }
   }
-  console.log(scan(arr, 1, 1));
 }
 
 function iterate(arr, nextArr) {
-    console.log("iterate")
   for (let i = 1; i < arr.length - 1; i++) {
     for (let j = 1; j < arr[0].length - 1; j++) {
       let count = scan(arr, i, j);
-      console.log("count:", count)
       if (arr[i][j] === 1) {
-        if (count === 2 || count === 3) {
-          nextArr[i][j] = 1;
-          console.log("alive to alive")
-        } else {
+        if (count < 2 || count > 3) {
           nextArr[i][j] = 0;
-          console.log("alive to dead")
-        } 
-      }
-      else {
+        } else if (count === 2 || count === 3) {
+          nextArr[i][j] = 1;
+        } else {
+          console.log("Something went wrong w/ live cells");
+        }
+      } else if (arr[i][j] === 0) {
         if (count === 3) {
           nextArr[i][j] = 1;
-          console.log("dead to alive")
         } else {
           nextArr[i][j] = 0;
-          console.log("dead to dead")
-
         }
+      } else {
+        console.log("ERROR! SOMETHING BROKEN", "arr[i][j] = ", arr[i][j]);
       }
     }
   }
@@ -117,13 +121,11 @@ function scan(arr, x, y) {
       }
     }
   }
-  if (arr[x][y] === 1) {
-    count--;
-  }
+  count -= arr[x][y];
   return count;
 }
 
 function drawPixel(color, canvas, i, j) {
   canvas.fillStyle = color;
-  canvas.fillRect(i * 10, j * 10, 10, 10);
+  canvas.fillRect(i * 10 + 1, j * 10 + 1, 9, 9);
 }

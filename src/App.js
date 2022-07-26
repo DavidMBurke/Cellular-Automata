@@ -1,6 +1,6 @@
 import React from "react";
 import "./Style.css";
-import Canvas from "./Canvas.js";
+import GameOfLife from "./GameOfLife.js";
 
 function App() {
   return (
@@ -21,7 +21,7 @@ function App() {
           <button className={"settings-button"}>Save</button>
           <button className={"settings-button"}>Load</button>
         </div>
-        <Canvas id="learningCanvas" />
+        <GameOfLife id="learningCanvas" />
 
         <div className={"settings"}>
           <button className={"settings-button"}>Start</button>
@@ -29,13 +29,13 @@ function App() {
           <button className={"settings-button"}>Step</button>
           <h3>Speed: *val* FPS</h3>
           <div>
-            <div class="slidecontainer">
+            <div className="slidecontainer">
               <input
                 type="range"
                 min="0"
                 max="25"
                 value="5"
-                class="slider"
+                className="slider"
                 id="speedSlider"
               />
             </div>

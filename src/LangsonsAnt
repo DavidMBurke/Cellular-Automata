@@ -26,22 +26,19 @@ export default function GameOfLife() {
       contextRef.current.fillRect(i, 0, 1, height);
     for (let i = 10; i < height; i += 10)
       contextRef.current.fillRect(0, i, width, 1);
-    for (let i = 100; i < width; i += 100)
-      contextRef.current.fillRect(i, 0, 2, height);
-    for (let i = 100; i < height; i += 100)
-      contextRef.current.fillRect(0, i, width, 2);
   }, []);
 
-  const draw = ({ nativeEvent }) => {
+  const placeAnt = ({ nativeEvent }) => {
     const { offsetX, offsetY } = nativeEvent;
-    let x = Math.floor(offsetX * .1);
-    let y = Math.floor(offsetY * .1);
-    if (grid[x][y] === 1) {
-        grid[x][y] = 0;
-        drawPixel("white", contextRef.current, x, y);
+    let x = Math.floor(offsetX * 0.1);
+    let y = Math.floor(offsetY * 0.1);
+    if (grid[x][y] === 0 || grid[x][y] === 1) {
+      grid[x][y] = 2;
+      drawPixel("blue", contextRef.current, x, y);
     } else {
-        grid[x][y] = 1;
-        drawPixel("black", contextRef.current, x, y);    }
+      grid[x][y] = 0;
+      drawPixel("white", contextRef.current, x, y);
+    }
   };
 
   function iterate() {
@@ -68,42 +65,40 @@ export default function GameOfLife() {
         }
       }
     }
-    console.log(grid)
+    console.log(grid);
   }
 
   function scanAll() {
     iterate();
-    let valueArray = makeGrid(10,10)
-    let neighborArray = makeGrid(10,10)
+    let valueArray = makeGrid(10, 10);
+    let neighborArray = makeGrid(10, 10);
     for (let i = 0; i < width * 0.1; i++) {
-        for (let j = 0; j < height * 0.1; j++) {
-          if (grid[i][j]) {
-            drawPixel("black", contextRef.current, i, j);
-          } else {
-            drawPixel("white", contextRef.current, i, j);
-          }
+      for (let j = 0; j < height * 0.1; j++) {
+        if (grid[i][j]) {
+          drawPixel("black", contextRef.current, i, j);
+        } else {
+          drawPixel("white", contextRef.current, i, j);
         }
       }
-      for (let i = 0; i < 10; i++) {
-          for (let j = 0; j < 10; j++) {
-              neighborArray[i][j] = scan(grid, i, j)
-              valueArray[i][j] = grid[i][j]
-          }
+    }
+    for (let i = 0; i < 10; i++) {
+      for (let j = 0; j < 10; j++) {
+        neighborArray[i][j] = scan(grid, i, j);
+        valueArray[i][j] = grid[i][j];
       }
-      console.table(valueArray);
-      console.table(neighborArray);
+    }
+    console.table(valueArray);
+    console.table(neighborArray);
   }
   return (
     <canvas
       id="learningCanvas"
-      onMouseDown={draw}
+      onMouseDown={placeAnt}
       onKeyDown={iterate}
       ref={canvasRef}
     />
   );
 }
-
-
 
 function makeGrid(cols, rows) {
   let arr = new Array(cols);
@@ -134,7 +129,7 @@ function scan(grid, x, y) {
       // miniArray.push(arr[x+i][y+j])
       let col = (x + i + 120) % 120;
       let row = (y + j + 80) % 80;
-      count += grid[col][row]
+      count += grid[col][row];
     }
   }
   count -= grid[x][y];
