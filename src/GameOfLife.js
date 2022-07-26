@@ -4,10 +4,9 @@ export default function GameOfLife() {
   const contextRef = useRef(null);
   const width = 1200;
   const height = 800;
-  let fps = 5;
   let grid = makeGrid(width * 0.1, height * 0.1);
-  let nextGrid = grid;
-  let animated = false;
+  let nextGrid = makeGrid(width * 0.1, height * 0.1);
+  let fps = 0
 
   useEffect(() => { 
     const canvas = canvasRef.current;
@@ -43,8 +42,12 @@ export default function GameOfLife() {
       grid[x][y] = 1;
       drawPixel("black", contextRef.current, x, y);
     }
-    console.log(x, y);
   };
+
+  const animate = () => {
+      let interval = 1000/fps;
+      setInterval(iterate(grid, nextGrid, contextRef.current),interval)
+  }
 
   const scanOnMouseOver = ({ nativeEvent }) => {
     const { offsetX, offsetY } = nativeEvent;
@@ -74,9 +77,11 @@ export default function GameOfLife() {
         <button className={"settings-button"}>Save</button>
         <button className={"settings-button"}>Load</button>
       </div>
-      <canvas id="learningCanvas" onMouseDown={draw} onMouseMove={scanOnMouseOver} ref={canvasRef} />
+      <canvas id="learningCanvas" onMouseDown={draw} 
+      //onMouseMove={scanOnMouseOver} 
+      ref={canvasRef} />
       <div className={"settings"}>
-        <button className={"settings-button"} onMouseDown={()=>{animated = !animated; console.log(animated)}}>Start / Stop</button>
+        <button className={"settings-button"}>Start / Stop</button>
         <button
           className={"settings-button"}
           onClick={() => {
@@ -105,12 +110,13 @@ export default function GameOfLife() {
         <div>
           <div className="slidecontainer">
             <input
+              id="speedSlider"
               type="range"
               min={0}
               max={25}
-              value={fps}
+              defaultValue={0}
               className="slider"
-              id="speedSlider"
+              onChange={(event)=>{fps=event.target.value; animate()}}
             />
           </div>
         </div>
@@ -192,11 +198,19 @@ function iterate(grid, nextGrid, canvas) {
       }
     }
   }
-  grid = nextGrid;
+  equalize(grid, nextGrid);
   drawGrid(grid, canvas);
 }
 
 function drawPixel(color, canvas, i, j) {
   canvas.fillStyle = color;
   canvas.fillRect(i * 10 + 2, j * 10 + 2, 8, 8);
+}
+
+function equalize(grid, gridNext) {
+    for (let i = 0; i < grid.length; i++) {
+        for (let j = 0; j < grid[0].length; j++) {
+            grid[i][j] = gridNext[i][j];
+        }
+    }
 }
