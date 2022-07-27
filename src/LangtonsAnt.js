@@ -4,9 +4,9 @@ export default function LangtonsAnt() {
   const contextRef = useRef(null);
   const width = 1200;
   const height = 800;
-  let grid = makeGrid(width, height);
+  let grid = makeGrid(width * .2 , height * .2);
   const ants = [];
-  const [fps, setFps] = useState(15);
+  const [fps, setFps] = useState(100);
   let interval;
   let animated = false;
 
@@ -18,6 +18,8 @@ export default function LangtonsAnt() {
     canvas.style.height = height;
 
     const context = canvas.getContext("2d");
+    console.log("context", context)
+    console.log("canvas", canvas)
     context.scale(1, 1);
     context.lineCap = "butt";
     context.strokeStyle = "black";
@@ -27,20 +29,21 @@ export default function LangtonsAnt() {
 
   const createAnt = ({ nativeEvent }) => {
     const { offsetX, offsetY } = nativeEvent;
-    let x = offsetX;
-    let y = offsetY;
+    let x = Math.floor(offsetX * .2);
+    let y = Math.floor(offsetY * .2);
 
     ants.push({
       x: x,
       y: y,
       direction: Math.floor(Math.random() * 4),
     });
+    drawPixel("black", contextRef.current, x, y)
   };
 
   const animate = () => {
     if (animated) return;
     interval = setInterval(() => {
-      iterate(ants, grid, canvasRef.current);
+      iterate(ants, grid, contextRef.current);
     }, 1000 / fps);
     animated = true;
   };
@@ -71,7 +74,7 @@ export default function LangtonsAnt() {
         <button
           className={"settings-button"}
           onClick={() => {
-            iterate(ants, grid, canvasRef.current);
+            iterate(ants, grid, contextRef.current);
           }}
         >
           Step
@@ -90,9 +93,9 @@ export default function LangtonsAnt() {
             <input
               id="speedSlider"
               type="range"
-              min={1}
-              max={30}
-              step={1}
+              min={25}
+              max={250}
+              step={25}
               defaultValue={fps}
               className="slider"
               onChange={(evt) => {
@@ -129,25 +132,24 @@ function makeGrid(cols, rows) {
 
 function iterate(ants, grid, canvas) {
   ants.forEach((ant) => {
+    const turn = antMove(ant,grid,canvas);
+    if (turn === "right") (ant.direction = (ant.direction + 1) % 4);
+    else ant.direction = (ant.direction + 3) % 4;
     switch (ant.direction) {
       case 0: {
-        ant.y++;
-        antMove(0, 1, ant, grid, canvas);
+        ant.y = (ant.y + 161) % 160;
         break;
       }
       case 1: {
-        ant.x++;
-        antMove(1, 0, ant, grid, canvas);
+        ant.x = (ant.x + 241) % 240;
         break;
       }
       case 2: {
-        ant.y--;
-        antMove(0, -1, ant, grid, canvas);
+        ant.y = (ant.y + 159) % 160;
         break;
       }
       case 3: {
-        ant.x--;
-        antMove(-1, 0, ant, grid, canvas);
+        ant.x = (ant.x + 239) % 240;
         break;
       }
       default:
@@ -156,21 +158,22 @@ function iterate(ants, grid, canvas) {
   });
 }
 
-function antMove(i, j, ant, grid, canvas) {
-  if (grid[ant.x + i][ant.y + j] === "black") {
-    ant.direction = (ant.direction += 3) % 4;
-  } else {
-    ant.direction = ant.direction++ % 4;
-  }
+function antMove(ant, grid, canvas) {
+  console.log("ant: ", ant)
   if (grid[ant.x][ant.y] === "black") {
     grid[ant.x][ant.y] = "white";
     drawPixel("white", canvas, ant.x, ant.y)
-  } else {grid[ant.x][ant.y] = "black";
-    drawPixel("black", canvas, ant.x, ant.y)}
+    return "right";
+  } else {
+    grid[ant.x][ant.y] = "black";
+    drawPixel("black", canvas, ant.x, ant.y)
+    return "left";
+  }
 
 }
 
-function drawPixel(color, canvas, i, j) {
+function drawPixel(color, canvas, x, y) {
+  console.log("canvas in drawPixel:", canvas)
   canvas.fillStyle = color;
-  canvas.fillRect(i, j, 1, 1);
+  canvas.fillRect(x * 5, y * 5, 5, 5);
 }

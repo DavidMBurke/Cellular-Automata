@@ -17,7 +17,7 @@ export default function GameOfLife() {
     canvas.height = height;
     canvas.style.width = width;
     canvas.style.height = height;
-
+    
     const context = canvas.getContext("2d");
     context.scale(1, 1);
     context.lineCap = "butt";
@@ -54,21 +54,21 @@ export default function GameOfLife() {
     }, 1000 / fps);
     animated = true;
   };
-
-  const clearAnimation = () => {
+  
+  const stopAnimation = () => {
     clearInterval(interval);
     animated = false;
   };
-
+  
   return (
     <div className={"columns"}>
       <div className={"info"}>
         <button className={"settings-button"} onClick={() => {
-            equalize(saveGrid, grid);
+          equalize(saveGrid, grid);
         }}>Save</button>
         <button className={"settings-button"} onClick={() => {
-            equalize(grid, saveGrid);
-            drawGrid(saveGrid, canvasRef.current)
+          equalize(grid, saveGrid);
+          drawGrid(saveGrid, contextRef.current)
         }}>Load</button>
       </div>
 
@@ -78,9 +78,9 @@ export default function GameOfLife() {
         <button
           className={"settings-button"}
           onClick={() => {
-            animated ? clearAnimation() : animate();
+            animated ? stopAnimation() : animate();
           }}
-        >
+          >
           Start / Stop
         </button>
         <button
@@ -88,7 +88,7 @@ export default function GameOfLife() {
           onClick={() => {
             iterate(grid, nextGrid, contextRef.current);
           }}
-        >
+          >
           Step
         </button>
         <button
@@ -96,7 +96,7 @@ export default function GameOfLife() {
           onClick={() => {
             clear(grid, contextRef.current);
           }}
-        >
+          >
           Clear
         </button>
         <button
@@ -104,7 +104,7 @@ export default function GameOfLife() {
           onClick={() => {
             randomizeGrid(grid, contextRef.current);
           }}
-        >
+          >
           Randomize
         </button>
         <h3>Speed: {`${fps}`} FPS</h3>
@@ -119,10 +119,10 @@ export default function GameOfLife() {
               defaultValue={fps}
               className="slider"
               onChange={(evt) => {
-                clearAnimation();
+                stopAnimation();
                 setFps(evt.target.value);
               }}
-            />
+              />
           </div>
         </div>
       </div>
@@ -208,6 +208,7 @@ function iterate(grid, nextGrid, canvas) {
 }
 
 function drawPixel(color, canvas, i, j) {
+    console.log(canvas);
   canvas.fillStyle = color;
   canvas.fillRect(i * 10 + 2, j * 10 + 2, 8, 8);
 }
