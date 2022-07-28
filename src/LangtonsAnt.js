@@ -4,7 +4,7 @@ export default function LangtonsAnt() {
   const contextRef = useRef(null);
   const width = 1200;
   const height = 800;
-  let grid = makeGrid(width * .2 , height * .2);
+  let grid = makeGrid(width * 0.2 , height * 0.2);
   const ants = [];
   const [fps, setFps] = useState(100);
   let interval;
@@ -82,7 +82,8 @@ export default function LangtonsAnt() {
         <button
           className={"settings-button"}
           onClick={() => {
-            clear(grid, contextRef.current);
+            clear(grid, contextRef.current, ants);
+            stopAnimation();
           }}
         >
           Clear
@@ -110,13 +111,14 @@ export default function LangtonsAnt() {
   );
 }
 
-const clear = (grid, canvas) => {
+const clear = (grid, canvas, ants) => {
   for (let i = 0; i < grid.length; i++) {
     for (let j = 0; j < grid[0].length; j++) {
       grid[i][j] = "white";
       drawPixel("white", canvas, i, j);
     }
   }
+  ants.length = 0;
 };
 
 function makeGrid(cols, rows) {

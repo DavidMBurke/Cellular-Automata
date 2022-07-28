@@ -1,5 +1,10 @@
+html {
+  height: 100%;
+}
+
 #root {
-  background-color: darkslategrey;
+  width: 1500px;
+  height: 100%;
 }
 
 .App {
@@ -15,27 +20,38 @@
   justify-self: center;
 }
 
+.banner {
+  width: 100%;
+}
+
 body {
-  background-color: rgb(24, 81, 100);
+  background-image: linear-gradient(whitesmoke, rgb(0, 0, 78));
+  background-repeat: no-repeat;
+  background-position-x: center;
+  background-size: 100%;
+  background-position-y: center;
   display: flex;
   justify-content: center;
+  height: 100%;
 }
 
 canvas{  
   background-color: white;
-  border: solid black 2px;
+  border: solid rgb(0, 0, 78) 10px;
   margin-left: 10px;
   margin-right: 10px;
 }
 
 nav {
   flex-direction: column;
+  background-color: rgb(0, 0, 78);
   color: whitesmoke;
   display: flex;
   justify-content: center;
   text-align: center;
   font-family: 'Arial';
   font-size: 28px;
+  margin-bottom: 30px;
 }
 
 
@@ -64,9 +80,18 @@ nav {
   height: 55px;
   font-size: 18px;
 }
+
+a{
+  color: rgb(0, 0, 0);
+  color: whitesmoke;
+  font-size: medium;
+  width: 100%;
+  font-size: 18px;}
+
 .columns{
   display: flex;
   flex-direction: row;
+  justify-content: center;
 }
 
 .vertical{
@@ -100,6 +125,19 @@ nav {
   width: 150px;
 }
 
+.wolfram-options{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 5px;
+  margin-top: 10px;
+}
+
 h1 {
   margin: 5px;
+}
+
+input {
+  margin-bottom: 15px;
 }
