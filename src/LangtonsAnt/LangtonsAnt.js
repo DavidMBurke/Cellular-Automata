@@ -56,8 +56,7 @@ export default function LangtonsAnt() {
   return (
     <div className={"columns"}>
       <div className={"info"}>
-        <button className={"settings-button"}>Save</button>
-        <button className={"settings-button"}>Load</button>
+        <button className={"settings-button"}>How it Works</button>
       </div>
 
       <canvas id="learningCanvas" onMouseDown={createAnt} ref={canvasRef} />

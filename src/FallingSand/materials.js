@@ -25,10 +25,42 @@ const gasMotion = (grid, nextGrid, x, y) => {
   return;
 };
 
+const fireMotion = (grid, nextGrid, x, y) => {
+  if (consume(nextGrid, x, y, empty, 15)) return;
+  burn(grid, nextGrid, x, y, "gas", 90, 3);
+  burn(grid, nextGrid, x, y, "wood", 60, 1);
+  if (swapUp(grid, nextGrid, "empty", x, y)) return;
+}
+
+
+const burn = (grid, nextGrid, x, y, material, flameFactor, reach) => {
+  for (let i = -reach; i < reach+1; i++) {
+    for (let j = -reach; j < reach+1; j++) {
+      if (x + i > grid.length-1 || y + j > grid[0].length-1 || x + i < 1 || y + j < 1) return;
+      if (grid[x + i][y + j].type === material) {
+        let rand = Math.floor(Math.random() * 100);
+        if (rand < flameFactor) {
+          nextGrid[x + i][y + j] = grid[x][y];
+        }
+      }
+    }
+  }
+};
+
+const consume = (nextGrid, x, y, replacement, consumeFactor) => {
+  let rand = Math.floor(Math.random() * 100);
+  if (rand > consumeFactor) {
+    return false;
+  } else {
+    nextGrid[x][y] = replacement;
+    return true;
+  }
+}
+
 const stoneMotion = (grid, nextGrid, x, y) => {
   stay(grid, nextGrid, x, y);
   return;
-}
+};
 
 const stay = (grid, nextGrid, x, y) => {
   nextGrid[x][y] = grid[x][y];
@@ -43,7 +75,6 @@ const swapDown = (grid, nextGrid, floater, x, y) => {
   }
   return false;
 };
-
 
 const swapUp = (grid, nextGrid, sinker, x, y) => {
   if (grid[x][y - 1].type === sinker && nextGrid[x][y - 1].type === sinker) {
@@ -207,8 +238,14 @@ const wall = {
 };
 
 const stone = {
-  type: "solid",
+  type: "stone",
   color: "lightgrey",
+  motion: stoneMotion,
+};
+
+const wood = {
+  type: "wood",
+  color: "brown",
   motion: stoneMotion,
 }
 
@@ -216,6 +253,12 @@ const gas = {
   type: "gas",
   color: "purple",
   motion: gasMotion,
-}
+};
 
-module.exports = { empty, sand, water, wall, stone, gas }
+const fire = {
+  type: "fire",
+  color: "red",
+  motion: fireMotion,
+};
+
+module.exports = { empty, sand, water, wall, stone, gas, fire, wood };

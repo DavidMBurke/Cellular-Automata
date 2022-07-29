@@ -90,7 +90,7 @@ export default function GameOfLife() {
             console.log("coming soon!");
           }}
         >
-          Info
+          How it Works
         </button>
       </div>
 

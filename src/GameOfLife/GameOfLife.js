@@ -6,10 +6,12 @@ export default function GameOfLife() {
   const height = 600;
   let grid = makeGrid(width * 0.1, height * 0.1);
   let nextGrid = makeGrid(width * 0.1, height * 0.1);
-  let saveGrid = makeGrid(width * 0.1, height * 0.1)
+  let saveGrid = makeGrid(width * 0.1, height * 0.1);
   let fps = 15;
   let interval;
   let animated = false;
+  let mirrorVertical = false;
+  let mirrorHorizontal = false;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -17,7 +19,7 @@ export default function GameOfLife() {
     canvas.height = height;
     canvas.style.width = width;
     canvas.style.height = height;
-    
+
     const context = canvas.getContext("2d");
     context.scale(1, 1);
     context.lineCap = "butt";
@@ -28,16 +30,19 @@ export default function GameOfLife() {
       contextRef.current.fillRect(i, 0, 1, height);
     for (let i = 10; i < height; i += 10)
       contextRef.current.fillRect(0, i, width, 1);
-    for (let i = 100; i < width; i += 100)
-      contextRef.current.fillRect(i, 0, 2, height);
-    for (let i = 100; i < height; i += 100)
-      contextRef.current.fillRect(0, i, width, 2);
   }, []);
 
   const draw = ({ nativeEvent }) => {
     const { offsetX, offsetY } = nativeEvent;
     let x = Math.floor(offsetX * 0.1);
     let y = Math.floor(offsetY * 0.1);
+    selectPixel(x, y);
+    if (mirrorHorizontal) drawMirrorHorizontal(x, y);
+    if (mirrorVertical) drawMirrorVertical(x, y);
+    if (mirrorHorizontal && mirrorVertical) drawMirrorBoth(x, y);
+  };
+
+  const selectPixel = (x, y) => {
     if (grid[x][y] === 1) {
       grid[x][y] = 0;
       drawPixel("white", contextRef.current, x, y);
@@ -47,6 +52,37 @@ export default function GameOfLife() {
     }
   };
 
+  const drawMirrorHorizontal = (x, y) => {
+    if (x > 40) {
+      x = 40 - (x - 40);
+    } else {
+      x = 40 + (40 - x);
+    }
+    selectPixel(x-1, y);
+  };
+
+  const drawMirrorVertical = (x, y) => {
+    if (y > 30) {
+      y = 30 - (y - 30);
+    } else {
+      y = 30 + (30 - y);
+    }
+    selectPixel(x, y-1);
+  };
+
+  const drawMirrorBoth = (x, y) => {
+    if (x > 40) {
+      x = 40 - (x - 40);
+    } else {
+      x = 40 + (40 - x);
+    }
+    if (y > 30) {
+      y = 30 - (y - 30);
+    } else {
+      y = 30 + (30 - y);
+    }
+    selectPixel(x-1, y-1);
+  };
   const animate = () => {
     if (animated) return;
     interval = setInterval(() => {
@@ -54,22 +90,35 @@ export default function GameOfLife() {
     }, 1000 / fps);
     animated = true;
   };
-  
+
   const stopAnimation = () => {
     clearInterval(interval);
     animated = false;
   };
-  
+
   return (
     <div className={"columns"}>
       <div className={"info"}>
-        <button className={"settings-button"} onClick={() => {
-          equalize(saveGrid, grid);
-        }}>Save</button>
-        <button className={"settings-button"} onClick={() => {
-          equalize(grid, saveGrid);
-          drawGrid(saveGrid, contextRef.current)
-        }}>Load</button>
+        <div className={"info"}>
+          <button className={"settings-button"}>How it Works</button>
+        </div>
+        <button
+          className={"settings-button"}
+          onClick={() => {
+            equalize(saveGrid, grid);
+          }}
+        >
+          Save
+        </button>
+        <button
+          className={"settings-button"}
+          onClick={() => {
+            equalize(grid, saveGrid);
+            drawGrid(saveGrid, contextRef.current);
+          }}
+        >
+          Load
+        </button>
       </div>
 
       <canvas id="learningCanvas" onMouseDown={draw} ref={canvasRef} />
@@ -80,7 +129,7 @@ export default function GameOfLife() {
           onClick={() => {
             animated ? stopAnimation() : animate();
           }}
-          >
+        >
           Start / Stop
         </button>
         <button
@@ -88,7 +137,7 @@ export default function GameOfLife() {
           onClick={() => {
             iterate(grid, nextGrid, contextRef.current);
           }}
-          >
+        >
           Step
         </button>
         <button
@@ -96,7 +145,7 @@ export default function GameOfLife() {
           onClick={() => {
             clear(grid, contextRef.current);
           }}
-          >
+        >
           Clear
         </button>
         <button
@@ -104,7 +153,7 @@ export default function GameOfLife() {
           onClick={() => {
             randomizeGrid(grid, contextRef.current);
           }}
-          >
+        >
           Randomize
         </button>
         <h3>Speed:</h3>
@@ -119,15 +168,27 @@ export default function GameOfLife() {
               defaultValue={fps}
               className="slider"
               onChange={(evt) => {
-                if(animated) {
-                stopAnimation();
-                animate();
+                if (animated) {
+                  stopAnimation();
+                  animate();
                 }
                 fps = evt.target.value;
               }}
-              />
+            />
           </div>
         </div>
+        <h4>Mirror x: </h4>
+        <input
+          type="checkbox"
+          checked={mirrorHorizontal}
+          onChange={() => (mirrorHorizontal = !mirrorHorizontal)}
+        />
+        <h4>Mirror y: </h4>
+        <input
+          type="checkbox"
+          checked={mirrorVertical}
+          onChange={() => (mirrorVertical = !mirrorVertical)}
+        />
       </div>
     </div>
   );
@@ -211,9 +272,8 @@ function iterate(grid, nextGrid, canvas) {
 }
 
 function drawPixel(color, canvas, i, j) {
-    console.log(canvas);
   canvas.fillStyle = color;
-  canvas.fillRect(i * 10 + 2, j * 10 + 2, 8, 8);
+  canvas.fillRect(i * 10 + 1, j * 10 + 1, 9, 9);
 }
 
 function equalize(grid, gridNext) {

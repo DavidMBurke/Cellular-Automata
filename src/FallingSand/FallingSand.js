@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import {empty, sand, water, wall, stone, gas} from "./materials"
+import {empty, sand, water, wall, stone, gas, fire, wood} from "./materials"
 export default function FallingSand() {
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
@@ -175,6 +175,20 @@ export default function FallingSand() {
             }}
           >
             Gas
+          </button>
+          <button
+            onClick={() => {
+              element = fire;
+            }}
+          >
+            Fire
+          </button>
+          <button
+            onClick={() => {
+              element = wood;
+            }}
+          >
+            Wood
           </button>
         </ul>
       </div>

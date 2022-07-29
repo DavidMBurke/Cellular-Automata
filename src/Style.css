@@ -101,6 +101,12 @@ a{
   flex-direction: column;
 }
 
+ul{
+  display:flex;
+  align-items: left;
+  flex-direction: column;
+}
+
 .horizontal{
   display: flex;
   flex-direction: row;
