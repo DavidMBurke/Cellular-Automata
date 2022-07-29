@@ -36,12 +36,20 @@ export default function FallingSand() {
       const { offsetX, offsetY } = nativeEvent;
       let x = Math.floor(offsetX * 0.25);
       let y = Math.floor(offsetY * 0.25);
-      if (x < 1 || y < 1 || x > grid.length - 2 || y > grid[0].length - 2)
+      if (x < 1 || y < 1 || x > grid.length - 1 || y > grid[0].length - 1)
         return;
       for (let i = -penSize; i < penSize - 1; i++) {
         for (let j = -penSize; j < penSize - 1; j++) {
-          grid[x + i][y + j] = element;
-          drawPixel(grid[x][y].color, contextRef.current, x + i, y + j);
+          let newX = x+i;
+          let newY = y+j;
+          if (newX < 1 || newY < 1 || newX > grid.length - 1 || newY > grid[0].length - 1)
+          return;
+          if(grid[newX][newY].type !== "wall") {
+          grid[newX][newY] = element;
+          nextGrid[newX][newY] = element;
+
+          drawPixel(grid[x+i][y+j].color, contextRef.current, x + i, y + j);
+          }
         }
       }
       isDrawing = true;
@@ -94,6 +102,7 @@ export default function FallingSand() {
         id="sandCanvas"
         onMouseDown={startDraw}
         onMouseMove={draw}
+        onClick={draw}
         onMouseUp={stopDraw}
         ref={canvasRef}
       />

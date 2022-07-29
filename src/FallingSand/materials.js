@@ -1,13 +1,12 @@
 const sandMotion = (grid, nextGrid, x, y) => {
   if (swapDown(grid, nextGrid, "empty", x, y)) return;
-  if (swapDown(grid, nextGrid, "liquid", x, y)) return;
   if (fallDiagonal(grid, nextGrid, x, y)) return;
   else stay(grid, nextGrid, x, y);
 };
 
 const waterMotion = (grid, nextGrid, x, y) => {
   if (fallDiagonal(grid, nextGrid, x, y)) return;
-  if (swapUp(grid, nextGrid, "powder", x, y)) return;
+  if (swapUp(grid, nextGrid, "sand", x, y)) return;
   if (swapDown(grid, nextGrid, "empty", x, y)) return;
   if (spread(grid, nextGrid, 1, x, y)) return;
   if (spread(grid, nextGrid, 1, x, y + 1)) return;
@@ -18,8 +17,8 @@ const waterMotion = (grid, nextGrid, x, y) => {
 const gasMotion = (grid, nextGrid, x, y) => {
   if (riseDiagonal(grid, nextGrid, x, y)) return;
   if (swapUp(grid, nextGrid, "empty", x, y)) return;
-  if (swapUp(grid, nextGrid, "liquid", x, y)) return;
-  if (swapUp(grid, nextGrid, "powder", x, y)) return;
+  if (swapUp(grid, nextGrid, "water", x, y)) return;
+  if (swapUp(grid, nextGrid, "sand", x, y)) return;
   if (spread(grid, nextGrid, 1, x, y)) return;
   if (spread(grid, nextGrid, 1, x, y - 1)) return;
   stay(grid, nextGrid, x, y);
@@ -190,19 +189,19 @@ const empty = {
 };
 
 const sand = {
-  type: "powder",
+  type: "sand",
   color: "yellow",
   motion: sandMotion,
 };
 
 const water = {
-  type: "liquid",
+  type: "water",
   color: "blue",
   motion: waterMotion,
 };
 
 const wall = {
-  type: "solid",
+  type: "wall",
   color: "black",
   motion: () => {},
 };
