@@ -201,10 +201,10 @@ const clear = (grid, nextGrid, canvas) => {
   for (let i = grid.length - 1; i > -1; i--) {
     for (let j = grid[0].length - 1; j > -1; j--) {
       if (
-        i < 2 ||
-        j < 2 ||
-        i > grid.length - 3 ||
-        j > grid[0].length - 3
+        i === 0 ||
+        j === 0 ||
+        i === grid.length - 1 ||
+        j === grid[0].length - 1
       ) {
         grid[i][j] = wall;
         nextGrid[i][j] = wall;
@@ -215,6 +215,8 @@ const clear = (grid, nextGrid, canvas) => {
         drawPixel("darkgrey", canvas, i, j);
       }
     }
+    canvas.fillRect(0,0,800,10);
+    canvas.fillRect(0,0,10,600);
   }
 };
 
