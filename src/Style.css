@@ -26,14 +26,11 @@ html {
 
 body {
   background-image: linear-gradient(whitesmoke, rgb(0, 0, 78));
-  background-repeat: no-repeat;
-  background-position-x: center;
-  background-size: 100%;
-  background-position-y: center;
   display: flex;
   justify-content: center;
   height: 100%;
-  
+  background-attachment: fixed;
+
 }
 
 canvas{  

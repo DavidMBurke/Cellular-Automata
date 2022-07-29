@@ -29,6 +29,7 @@ export default function FallingSand() {
     contextRef.current = context;
     clear(grid, nextGrid, contextRef.current);
     animate();
+    
   }, []);
 
   const draw = ({ nativeEvent }) => {
@@ -200,10 +201,10 @@ const clear = (grid, nextGrid, canvas) => {
   for (let i = grid.length - 1; i > -1; i--) {
     for (let j = grid[0].length - 1; j > -1; j--) {
       if (
-        i === 0 ||
-        j === 0 ||
-        i === grid.length - 1 ||
-        j === grid[0].length - 1
+        i < 2 ||
+        j < 2 ||
+        i > grid.length - 3 ||
+        j > grid[0].length - 3
       ) {
         grid[i][j] = wall;
         nextGrid[i][j] = wall;
