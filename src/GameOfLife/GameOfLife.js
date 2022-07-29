@@ -2,8 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 export default function GameOfLife() {
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
-  const width = 1200;
-  const height = 800;
+  const width = 800;
+  const height = 600;
   let grid = makeGrid(width * 0.1, height * 0.1);
   let nextGrid = makeGrid(width * 0.1, height * 0.1);
   let saveGrid = makeGrid(width * 0.1, height * 0.1)
@@ -183,8 +183,8 @@ function scan(grid, x, y) {
   let count = 0;
   for (let i = -1; i < 2; i++) {
     for (let j = -1; j < 2; j++) {
-      let col = (x + i + 120) % 120;
-      let row = (y + j + 80) % 80;
+      let col = (x + i + 80) % 80;
+      let row = (y + j + 60) % 60;
       count += grid[col][row];
     }
   }

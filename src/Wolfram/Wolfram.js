@@ -2,8 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 export default function GameOfLife() {
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
-  const width = 1200;
-  const height = 800;
+  const width = 800;
+  const height = 600;
   let grid = makeGrid(width * 0.2, height * 0.2);
   let fps = 5;
   let row = [0];
@@ -71,7 +71,7 @@ export default function GameOfLife() {
         case110,
         case111
       );
-      if (row > 160) stopAnimation();
+      if (row > 120) stopAnimation();
     }, 1000 / fps);
     animated = true;
   };
@@ -240,9 +240,9 @@ function makeGrid(cols, rows) {
 }
 
 function scan(grid, x, y) {
-  let upLeft = grid[(x + 239) % 240][y - 1];
+  let upLeft = grid[(x + 159) % 160][y - 1];
   let upMid = grid[x][y - 1];
-  let upRight = grid[(x + 1) % 240][y - 1];
+  let upRight = grid[(x + 1) % 160][y - 1];
   return "" + upLeft + upMid + upRight;
 }
 

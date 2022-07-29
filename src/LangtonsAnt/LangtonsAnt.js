@@ -2,8 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 export default function LangtonsAnt() {
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
-  const width = 1200;
-  const height = 800;
+  const width = 800;
+  const height = 600;
   let grid = makeGrid(width * 0.2 , height * 0.2);
   const ants = [];
   let fps = 100;
@@ -142,19 +142,19 @@ function iterate(ants, grid, canvas) {
     else ant.direction = (ant.direction + 3) % 4;
     switch (ant.direction) {
       case 0: {
-        ant.y = (ant.y + 161) % 160;
+        ant.y = (ant.y + 121) % 120;
         break;
       }
       case 1: {
-        ant.x = (ant.x + 241) % 240;
+        ant.x = (ant.x + 161) % 160;
         break;
       }
       case 2: {
-        ant.y = (ant.y + 159) % 160;
+        ant.y = (ant.y + 119) % 120;
         break;
       }
       case 3: {
-        ant.x = (ant.x + 239) % 240;
+        ant.x = (ant.x + 159) % 160;
         break;
       }
       default:

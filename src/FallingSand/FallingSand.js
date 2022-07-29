@@ -3,8 +3,8 @@ import {empty, sand, water, wall, stone, gas} from "./materials"
 export default function FallingSand() {
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
-  const width = 1200;
-  const height = 800;
+  const width = 800;
+  const height = 600;
   let grid = makeGrid(width * 0.25, height * 0.25);
   let nextGrid = makeGrid(width * 0.25, height * 0.25);
   let saveGrid = makeGrid(width * 0.25, height * 0.25);
