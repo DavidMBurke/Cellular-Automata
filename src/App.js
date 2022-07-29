@@ -1,10 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom"; 
 import "./Style.css";
-import GameOfLife from "./GameOfLife.js";
-import LangtonsAnt from "./LangtonsAnt";
-import Wolfram from "./Wolfram";
-import FallingSand from "./FallingSand";
+import GameOfLife from "./GameOfLife/GameOfLife.js";
+import LangtonsAnt from "./LangtonsAnt/LangtonsAnt";
+import Wolfram from "./Wolfram/Wolfram";
+import FallingSand from "./FallingSand/FallingSand";
 import { Link, Route, Routes, BrowserRouter as Router } from 'react-router-dom';
 
 function App() {
@@ -26,7 +26,7 @@ function App() {
           </button>
           </Link>
           <Link to="/langtons-ant">
-          <button className={"nav-button"}>Langston's Ant</button>
+          <button className={"nav-button"}>Langton's Ant</button>
           </Link>
         </div>
       </nav>

@@ -100,7 +100,10 @@ export default function LangtonsAnt() {
               defaultValue={fps}
               className="slider"
               onChange={(evt) => {
+                if (animated){
                 stopAnimation();
+                animate();
+                }
                 fps = evt.target.value;
               }}
             />

@@ -7,7 +7,7 @@ export default function GameOfLife() {
   let grid = makeGrid(width * 0.1, height * 0.1);
   let nextGrid = makeGrid(width * 0.1, height * 0.1);
   let saveGrid = makeGrid(width * 0.1, height * 0.1)
-  const [fps, setFps] = useState(15);
+  let fps = 15;
   let interval;
   let animated = false;
 
@@ -119,8 +119,11 @@ export default function GameOfLife() {
               defaultValue={fps}
               className="slider"
               onChange={(evt) => {
+                if(animated) {
                 stopAnimation();
-                setFps(evt.target.value);
+                animate();
+                }
+                fps = evt.target.value;
               }}
               />
           </div>

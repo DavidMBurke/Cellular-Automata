@@ -141,12 +141,15 @@ export default function GameOfLife() {
               id="speedSlider"
               type="range"
               min={1}
-              max={10}
+              max={30}
               step={1}
               defaultValue={fps}
               className="slider"
               onChange={(evt) => {
-                stopAnimation();
+                if (animated){
+                  stopAnimation();
+                  animate();
+                  }
                 fps = evt.target.value;
               }}
             />
