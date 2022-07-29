@@ -5,7 +5,7 @@ export default function GameOfLife() {
   const width = 1200;
   const height = 800;
   let grid = makeGrid(width * 0.2, height * 0.2);
-  const [fps, setFps] = useState(5);
+  let fps = 5;
   let row = [0];
   let interval;
   let animated = false;
@@ -134,7 +134,7 @@ export default function GameOfLife() {
         >
           Clear
         </button>
-        <h3>Speed: {`${fps}`} FPS</h3>
+        <h3>Speed:</h3>
         <div>
           <div className="slidecontainer">
             <input
@@ -147,7 +147,7 @@ export default function GameOfLife() {
               className="slider"
               onChange={(evt) => {
                 stopAnimation();
-                setFps(evt.target.value);
+                fps = evt.target.value;
               }}
             />
           </div>

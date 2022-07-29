@@ -6,7 +6,7 @@ export default function LangtonsAnt() {
   const height = 800;
   let grid = makeGrid(width * 0.2 , height * 0.2);
   const ants = [];
-  const [fps, setFps] = useState(100);
+  let fps = 100;
   let interval;
   let animated = false;
 
@@ -88,7 +88,7 @@ export default function LangtonsAnt() {
         >
           Clear
         </button>
-        <h3>Speed: {`${fps}`} FPS</h3>
+        <h3>Speed:</h3>
         <div>
           <div className="slidecontainer">
             <input
@@ -101,7 +101,7 @@ export default function LangtonsAnt() {
               className="slider"
               onChange={(evt) => {
                 stopAnimation();
-                setFps(evt.target.value);
+                fps = evt.target.value;
               }}
             />
           </div>

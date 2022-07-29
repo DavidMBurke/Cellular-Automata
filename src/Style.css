@@ -38,7 +38,7 @@ body {
 
 canvas{  
   background-color: white;
-  border: solid rgb(0, 0, 78) 10px;
+  border: solid black 10px;
   margin-left: 10px;
   margin-right: 10px;
 }
@@ -53,6 +53,7 @@ nav {
   font-family: 'Arial';
   font-size: 28px;
   margin-bottom: 30px;
+  border-bottom: solid black 10px;
 }
 
 

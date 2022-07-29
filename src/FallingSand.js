@@ -7,10 +7,12 @@ export default function GameOfLife() {
   let grid = makeGrid(width * 0.25, height * 0.25);
   let nextGrid = makeGrid(width * 0.25, height * 0.25);
   let saveGrid = makeGrid(width * 0.25, height * 0.25);
-  const [fps, setFps] = useState(15);
-  const [element, setElement] = useState(sand);
+  let element = water;
+  let penSize = 2;
   let interval;
   let animated = false;
+  let isDrawing = false;
+  let drawingInterval;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -26,27 +28,39 @@ export default function GameOfLife() {
     context.lineWidth = 1;
     contextRef.current = context;
     clear(grid, nextGrid, contextRef.current);
+    animate();
   }, []);
 
+
+
   const draw = ({ nativeEvent }) => {
-    const { offsetX, offsetY } = nativeEvent;
+    if (isDrawing) 
+{    const { offsetX, offsetY } = nativeEvent;
     let x = Math.floor(offsetX * 0.25);
     let y = Math.floor(offsetY * 0.25);
-    if (x < 1 ||
-        y < 1 ||
-        x > grid.length - 2 ||
-        y > grid[0].length - 2) return;
-    grid[x][y] = element;
-    contextRef.current.beginPath();
-    contextRef.current.moveTo(offsetX, offsetY);
-    drawPixel(grid[x][y].color, contextRef.current, x, y);
+    if (x < 1 || y < 1 || x > grid.length - 2 || y > grid[0].length - 2) return;
+    for (let i = -penSize; i < penSize - 1; i++) {
+      for (let j = -penSize; j < penSize - 1; j++) {
+        grid[x + i][y + j] = element;
+        drawPixel(grid[x][y].color, contextRef.current, x + i, y + j);
+      }
+    };
+    isDrawing = true;
   };
+}
+  const startDraw = () => {
+      isDrawing = true;
+  }
+
+  const stopDraw = () => {
+      isDrawing = false;
+  }
 
   const animate = () => {
     if (animated) return;
     interval = setInterval(() => {
       iterate(grid, nextGrid, contextRef.current);
-    }, 1000 / fps);
+    }, 40);
     animated = true;
   };
 
@@ -77,7 +91,7 @@ export default function GameOfLife() {
         </button>
       </div>
 
-      <canvas id="sandCanvas" onMouseMove={draw} ref={canvasRef} />
+      <canvas id="sandCanvas" onMouseDown={startDraw} onMouseMove={draw} onMouseUp={stopDraw} ref={canvasRef} />
 
       <div className={"settings"}>
         <button
@@ -104,10 +118,36 @@ export default function GameOfLife() {
         >
           Clear
         </button>
-        <h3>Speed: {`${fps}`} FPS</h3>
+        <h3>Pensize:</h3>
+        <div>
+          <button onClick={() => (penSize = 1)}>1</button>
+          <button onClick={() => (penSize = 2)}>3</button>
+          <button onClick={() => (penSize = 3)}>5</button>
+          <button onClick={() => (penSize = 4)}>7</button>
+          <button onClick={() => (penSize = 5)}>9</button>
+        </div>
         <ul>
-            <button onClick={()=>{setElement(sand)}}>Sand</button>
-            <button onClick={()=>{setElement(empty)}}>Erase</button>
+          <button
+            onClick={() => {
+              element = empty;
+            }}
+          >
+            Erase
+          </button>
+          <button
+            onClick={() => {
+              element = sand;
+            }}
+          >
+            Sand
+          </button>
+          <button
+            onClick={() => {
+              element = water;
+            }}
+          >
+            Water
+          </button>
         </ul>
       </div>
     </div>
@@ -159,10 +199,21 @@ function drawGrid(grid, canvas) {
 }
 
 function iterate(grid, nextGrid, canvas) {
-  for (let i = grid.length - 1; i > -1; i--) {
-    for (let j = grid[0].length - 1; j > -1; j--) {
-      if (grid[i][j] !== empty) {
-        grid[i][j].motion(grid, nextGrid, i, j);
+  let rand = Math.floor(Math.random() * 2);
+  if (rand) {
+    for (let i = grid.length - 1; i > -1; i--) {
+      for (let j = 0; j < grid[0].length; j++) {
+        if (grid[i][j] !== empty) {
+          grid[i][j].motion(grid, nextGrid, i, j);
+        }
+      }
+    }
+  } else {
+    for (let i = 0; i < grid.length; i++) {
+      for (let j = 0; j < grid[0].length; j++) {
+        if (grid[i][j] !== empty) {
+          grid[i][j].motion(grid, nextGrid, i, j);
+        }
       }
     }
   }
@@ -175,54 +226,27 @@ function drawPixel(color, canvas, i, j) {
   canvas.fillRect(i * 4, j * 4, 4, 4);
 }
 
-function equalize(grid, gridNext) {
+function equalize(grid, nextGrid) {
   for (let i = 0; i < grid.length; i++) {
     for (let j = 0; j < grid[0].length; j++) {
-      grid[i][j] = gridNext[i][j];
+      grid[i][j] = nextGrid[i][j];
     }
   }
 }
 
-const sandMotion = (grid, gridNext, x, y) => {
-  if (y + 1 > grid[0].length - 1) {
-    gridNext[x][y] = grid[x][y];
-  } else if (grid[x][y + 1] === empty) {
-    gridNext[x][y + 1] = grid[x][y];
-    gridNext[x][y] = grid[x][y + 1];
-  } else if (
-    grid[x][y + 1].type === "solid" &&
-    grid[x - 1][y + 1].type === "solid" &&
-    grid[x + 1][y + 1].type === "solid"
-  ) {
-    gridNext[x][y] = grid[x][y];
-  } else if (
-    grid[x][y + 1].type === "solid" &&
-    grid[x - 1][y + 1].type !== "solid" &&
-    grid[x + 1][y + 1].type === "solid"
-  ) {
-    gridNext[x][y] = grid[x - 1][y - 1];
-    gridNext[x - 1][y - 1] = grid[x][y];
-  } else if (
-    grid[x][y + 1].type === "solid" &&
-    grid[x - 1][y + 1].type === "solid" &&
-    grid[x + 1][y - 1].type !== "solid"
-  ) {
-    gridNext[x][y] = grid[x + 1][y - 1];
-    gridNext[x + 1][y - 1] = grid[x][y];
-  } else if (
-    grid[x][y + 1].type === "solid" &&
-    grid[x - 1][y + 1].type !== "solid" &&
-    grid[x + 1][y - 1].type !== "solid"
-  ) {
-    let rand = Math.floor(Math.random() * 2);
-    if (rand) {
-      gridNext[x][y] = grid[x + 1][y - 1];
-      gridNext[x + 1][y - 1] = grid[x][y];
-    } else {
-      gridNext[x][y] = grid[x - 1][y - 1];
-      gridNext[x - 1][y - 1] = grid[x][y];
-    }
-  }
+const sandMotion = (grid, nextGrid, x, y) => {
+  if (swapDown(grid, nextGrid, "empty", x, y)) return;
+  else if (swapDown(grid, nextGrid, "water", x, y)) return;
+  else if (fallDiagonal(grid, nextGrid, x, y)) return;
+  else stay(grid, nextGrid, x, y);
+};
+
+const waterMotion = (grid, nextGrid, x, y) => {
+  if (swapDown(grid, nextGrid, "empty", x, y)) return;
+  else if (fallDiagonal(grid, nextGrid, x, y)) return;
+  else if (spread(grid, nextGrid, 1, x, y)) return;
+  else if (spread(grid, nextGrid, 1, x, y+1)) return;
+  else stay(grid, nextGrid, x, y);
 };
 
 const empty = {
@@ -237,8 +261,113 @@ const sand = {
   motion: sandMotion,
 };
 
+const water = {
+  type: "liquid",
+  color: "blue",
+  motion: waterMotion,
+};
+
 const wall = {
   type: "solid",
   color: "black",
   motion: () => {},
+};
+
+const stay = (grid, nextGrid, x, y) => {
+  nextGrid[x][y] = grid[x][y];
+};
+
+const swapDown = (grid, nextGrid, floater, x, y) => {
+  if (grid[x][y + 1].type === floater && nextGrid[x][y + 1].type === floater) {
+    nextGrid[x][y + 1] = grid[x][y];
+    nextGrid[x][y] = grid[x][y + 1];
+    return true;
+  }
+  return false;
+};
+
+const fallDiagonal = (grid, nextGrid, x, y) => {
+  if (
+    grid[x - 1][y + 1].type === "empty" &&
+    grid[x + 1][y + 1].type !== "empty" &&
+    nextGrid[x - 1][y + 1].type === "empty" &&
+    nextGrid[x + 1][y + 1].type !== "empty"
+  ) {
+    nextGrid[x][y] = empty;
+    nextGrid[x - 1][y + 1] = grid[x][y];
+    return true;
+  }
+  if (
+    grid[x - 1][y + 1].type !== "empty" &&
+    grid[x + 1][y + 1].type === "empty" &&
+    nextGrid[x - 1][y + 1].type !== "empty" &&
+    nextGrid[x + 1][y + 1].type === "empty"
+  ) {
+    nextGrid[x][y] = empty;
+    nextGrid[x + 1][y + 1] = grid[x][y];
+    return true;
+  }
+  if (
+    grid[x - 1][y + 1].type === "empty" &&
+    grid[x + 1][y + 1].type === "empty" &&
+    nextGrid[x - 1][y + 1].type === "empty" &&
+    nextGrid[x + 1][y + 1].type === "empty"
+  ) {
+    let rand = Math.floor(Math.random() * 2);
+    if (rand) {
+      nextGrid[x][y] = empty;
+
+      nextGrid[x + 1][y + 1] = grid[x][y];
+    } else {
+      nextGrid[x][y] = empty;
+
+      nextGrid[x - 1][y + 1] = grid[x][y];
+    }
+    return true;
+  }
+  return false;
+};
+
+const spread = (grid, nextGrid, spread, x, y) => {
+    let left = x - spread;
+    if (left < 1) left = 1;
+    let right = x + spread;
+    if (right > grid.length -1) right = grid.length -1;
+  if (
+    grid[left][y].type === "empty" &&
+    grid[right][y].type !== "empty" &&
+    nextGrid[left][y].type === "empty" &&
+    nextGrid[right][y].type !== "empty"
+  ) {
+    nextGrid[x][y] = grid[left][y];
+    nextGrid[left][y] = grid[x][y];
+
+    return true;
+  }
+  if (
+    grid[left][y].type !== "empty" &&
+    grid[right][y].type === "empty" &&
+    nextGrid[left][y].type !== "empty" &&
+    nextGrid[right][y].type === "empty"
+  ) {
+    nextGrid[x][y] = grid[right][y];
+    nextGrid[right][y] = grid[x][y];
+    return true;
+  }
+  if (
+    grid[left][y].type === "empty" &&
+    grid[right][y].type === "empty" &&
+    nextGrid[left][y].type === "empty" &&
+    nextGrid[right][y].type === "empty"
+  ) {
+    let rand = Math.floor(Math.random() * 2);
+    if (rand) {
+      nextGrid[x][y] = grid[left][y];
+      nextGrid[left][y] = grid[x][y];
+    } else {
+      nextGrid[x][y] = grid[right][y];
+      nextGrid[right][y] = grid[x][y];
+    }
+    return true;
+  }
 };

@@ -107,7 +107,7 @@ export default function GameOfLife() {
           >
           Randomize
         </button>
-        <h3>Speed: {`${fps}`} FPS</h3>
+        <h3>Speed:</h3>
         <div>
           <div className="slidecontainer">
             <input
