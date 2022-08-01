@@ -35,7 +35,7 @@ body {
 
 canvas{  
   background-color: white;
-  border: solid black 10px;
+  /* border: solid black 10px; */
   margin-left: 10px;
   margin-right: 10px;
 }

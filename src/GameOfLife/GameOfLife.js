@@ -26,10 +26,12 @@ export default function GameOfLife() {
     context.strokeStyle = "black";
     context.lineWidth = 1;
     contextRef.current = context;
-    for (let i = 10; i < width; i += 10)
+    for (let i = 0; i < width; i += 10)
       contextRef.current.fillRect(i, 0, 1, height);
-    for (let i = 10; i < height; i += 10)
+    for (let i = 0; i < height; i += 10)
       contextRef.current.fillRect(0, i, width, 1);
+      contextRef.current.fillRect(0, width-1, 1, height)
+      contextRef.current.fillRect(height-1, 0, width, 1)
   }, []);
 
   const draw = ({ nativeEvent }) => {
