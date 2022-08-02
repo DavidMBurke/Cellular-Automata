@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 export default function GameOfLife() {
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
+  const mirrorVertical = useRef(true);
+  const mirrorHorizontal = useRef(true);
   const width = 800;
   const height = 600;
   let grid = makeGrid(width * 0.1, height * 0.1);
@@ -10,9 +12,7 @@ export default function GameOfLife() {
   let fps = 15;
   let interval;
   let animated = false;
-  let mirrorVertical = false;
-  let mirrorHorizontal = false;
-
+  
   useEffect(() => {
     const canvas = canvasRef.current;
     canvas.width = width;
@@ -30,8 +30,8 @@ export default function GameOfLife() {
       contextRef.current.fillRect(i, 0, 1, height);
     for (let i = 0; i < height; i += 10)
       contextRef.current.fillRect(0, i, width, 1);
-      contextRef.current.fillRect(0, width-1, 1, height)
-      contextRef.current.fillRect(height-1, 0, width, 1)
+      contextRef.current.fillRect(width-1, 0, 1, height);
+      contextRef.current.fillRect(0, height-1, width, 1);
   }, []);
 
   const draw = ({ nativeEvent }) => {
@@ -39,9 +39,10 @@ export default function GameOfLife() {
     let x = Math.floor(offsetX * 0.1);
     let y = Math.floor(offsetY * 0.1);
     selectPixel(x, y);
-    if (mirrorHorizontal) drawMirrorHorizontal(x, y);
-    if (mirrorVertical) drawMirrorVertical(x, y);
-    if (mirrorHorizontal && mirrorVertical) drawMirrorBoth(x, y);
+    console.log("mirrors in draw", "vertical:", mirrorVertical, "horizontal:", mirrorHorizontal)
+    if (!mirrorHorizontal.current) drawMirrorHorizontal(x, y);
+    if (!mirrorVertical.current) drawMirrorVertical(x, y);
+    if (!mirrorHorizontal.current && !mirrorVertical.current) drawMirrorBoth(x, y);
   };
 
   const selectPixel = (x, y) => {
@@ -182,14 +183,17 @@ export default function GameOfLife() {
         <h4>Mirror x: </h4>
         <input
           type="checkbox"
-          checked={mirrorHorizontal}
-          onChange={() => (mirrorHorizontal = !mirrorHorizontal)}
+          ref={mirrorHorizontal}
+          value={mirrorHorizontal}
+          onChange={() => (mirrorHorizontal.current = !mirrorHorizontal.current)}
         />
         <h4>Mirror y: </h4>
         <input
+          ref={mirrorVertical}
+          value={mirrorVertical}
           type="checkbox"
-          checked={mirrorVertical}
-          onChange={() => (mirrorVertical = !mirrorVertical)}
+          onChange={(e) => {mirrorVertical.current = !mirrorVertical.current; console.log(e.target.checked, "mirrorVertical", mirrorVertical)}}
+          
         />
       </div>
     </div>

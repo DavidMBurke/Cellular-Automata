@@ -15,13 +15,14 @@ const waterMotion = (grid, nextGrid, x, y) => {
 };
 
 const gasMotion = (grid, nextGrid, x, y) => {
-  let rand = Math.floor(Math.random()*3);
   if (riseDiagonal(grid, nextGrid, x, y)) return;
   if (spread(grid, nextGrid, 1, x, y)) return;
   if (spread(grid, nextGrid, 1, x, y - 1)) return;
   if (swapUp(grid, nextGrid, "empty", x, y)) return;
   if (swapUp(grid, nextGrid, "water", x, y)) return;
   if (swapUp(grid, nextGrid, "sand", x, y)) return;
+  if (fallDiagonal(grid, nextGrid, x, y)) return;
+  if (spread(grid, nextGrid, 1, x, y + 1)) return;
   stay(grid, nextGrid, x, y);
   return;
 };
