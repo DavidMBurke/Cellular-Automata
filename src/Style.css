@@ -82,7 +82,7 @@ nav {
 
 a{
   color: rgb(0, 0, 0);
-  color: whitesmoke;
+  color: rgb(43, 0, 128);
   font-size: medium;
   width: 100%;
   font-size: 18px;}
@@ -145,4 +145,14 @@ h1 {
 
 input {
   margin-bottom: 15px;
+}
+
+.home-view {
+  background-color: whitesmoke;
+  border: solid black 2px;
+  padding: 10px;
+}
+
+.imbeded-link {
+  color:rgb(0, 0, 0);
 }

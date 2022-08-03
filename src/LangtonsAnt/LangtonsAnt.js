@@ -4,7 +4,7 @@ export default function LangtonsAnt() {
   const contextRef = useRef(null);
   const width = 800;
   const height = 600;
-  let grid = makeGrid(width * 0.2 , height * 0.2);
+  let grid = makeGrid(width * 0.2, height * 0.2);
   const ants = [];
   let fps = 100;
   let interval;
@@ -18,8 +18,8 @@ export default function LangtonsAnt() {
     canvas.style.height = height;
 
     const context = canvas.getContext("2d");
-    console.log("context", context)
-    console.log("canvas", canvas)
+    console.log("context", context);
+    console.log("canvas", canvas);
     context.scale(1, 1);
     context.lineCap = "butt";
     context.strokeStyle = "black";
@@ -29,15 +29,15 @@ export default function LangtonsAnt() {
 
   const createAnt = ({ nativeEvent }) => {
     const { offsetX, offsetY } = nativeEvent;
-    let x = Math.floor(offsetX * .2);
-    let y = Math.floor(offsetY * .2);
+    let x = Math.floor(offsetX * 0.2);
+    let y = Math.floor(offsetY * 0.2);
 
     ants.push({
       x: x,
       y: y,
       direction: Math.floor(Math.random() * 4),
     });
-    drawPixel("black", contextRef.current, x, y)
+    drawPixel("black", contextRef.current, x, y);
   };
 
   const animate = () => {
@@ -56,7 +56,9 @@ export default function LangtonsAnt() {
   return (
     <div className={"columns"}>
       <div className={"info"}>
-        <button className={"settings-button"}>How it Works</button>
+        <a href="https://en.wikipedia.org/wiki/Langton%27s_ant" target="_blank">
+          <button className={"settings-button"}>How it Works</button>
+        </a>
       </div>
 
       <canvas id="learningCanvas" onMouseDown={createAnt} ref={canvasRef} />
@@ -99,9 +101,9 @@ export default function LangtonsAnt() {
               defaultValue={fps}
               className="slider"
               onChange={(evt) => {
-                if (animated){
-                stopAnimation();
-                animate();
+                if (animated) {
+                  stopAnimation();
+                  animate();
                 }
                 fps = evt.target.value;
               }}
@@ -136,8 +138,8 @@ function makeGrid(cols, rows) {
 
 function iterate(ants, grid, canvas) {
   ants.forEach((ant) => {
-    const turn = antMove(ant,grid,canvas);
-    if (turn === "right") (ant.direction = (ant.direction + 1) % 4);
+    const turn = antMove(ant, grid, canvas);
+    if (turn === "right") ant.direction = (ant.direction + 1) % 4;
     else ant.direction = (ant.direction + 3) % 4;
     switch (ant.direction) {
       case 0: {
@@ -163,21 +165,20 @@ function iterate(ants, grid, canvas) {
 }
 
 function antMove(ant, grid, canvas) {
-  console.log("ant: ", ant)
+  console.log("ant: ", ant);
   if (grid[ant.x][ant.y] === "black") {
     grid[ant.x][ant.y] = "white";
-    drawPixel("white", canvas, ant.x, ant.y)
+    drawPixel("white", canvas, ant.x, ant.y);
     return "right";
   } else {
     grid[ant.x][ant.y] = "black";
-    drawPixel("black", canvas, ant.x, ant.y)
+    drawPixel("black", canvas, ant.x, ant.y);
     return "left";
   }
-
 }
 
 function drawPixel(color, canvas, x, y) {
-  console.log("canvas in drawPixel:", canvas)
+  console.log("canvas in drawPixel:", canvas);
   canvas.fillStyle = color;
   canvas.fillRect(x * 5, y * 5, 5, 5);
 }

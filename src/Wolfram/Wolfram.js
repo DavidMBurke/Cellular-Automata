@@ -84,14 +84,9 @@ export default function GameOfLife() {
   return (
     <div className={"columns"}>
       <div className={"info"}>
-        <button
-          className={"settings-button"}
-          onClick={() => {
-            console.log("coming soon!");
-          }}
-        >
-          How it Works
-        </button>
+        <a href="https://mathworld.wolfram.com/ElementaryCellularAutomaton.html" target="_blank">
+          <button className={"settings-button"}>How it Works</button>
+        </a>
       </div>
 
       <canvas id="learningCanvas" onMouseDown={draw} ref={canvasRef} />
@@ -146,10 +141,10 @@ export default function GameOfLife() {
               defaultValue={fps}
               className="slider"
               onChange={(evt) => {
-                if (animated){
+                if (animated) {
                   stopAnimation();
                   animate();
-                  }
+                }
                 fps = evt.target.value;
               }}
             />

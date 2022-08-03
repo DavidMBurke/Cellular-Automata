@@ -12,7 +12,7 @@ export default function GameOfLife() {
   let fps = 15;
   let interval;
   let animated = false;
-  
+
   useEffect(() => {
     const canvas = canvasRef.current;
     canvas.width = width;
@@ -30,8 +30,8 @@ export default function GameOfLife() {
       contextRef.current.fillRect(i, 0, 1, height);
     for (let i = 0; i < height; i += 10)
       contextRef.current.fillRect(0, i, width, 1);
-      contextRef.current.fillRect(width-1, 0, 1, height);
-      contextRef.current.fillRect(0, height-1, width, 1);
+    contextRef.current.fillRect(width - 1, 0, 1, height);
+    contextRef.current.fillRect(0, height - 1, width, 1);
   }, []);
 
   const draw = ({ nativeEvent }) => {
@@ -39,10 +39,17 @@ export default function GameOfLife() {
     let x = Math.floor(offsetX * 0.1);
     let y = Math.floor(offsetY * 0.1);
     selectPixel(x, y);
-    console.log("mirrors in draw", "vertical:", mirrorVertical, "horizontal:", mirrorHorizontal)
+    console.log(
+      "mirrors in draw",
+      "vertical:",
+      mirrorVertical,
+      "horizontal:",
+      mirrorHorizontal
+    );
     if (!mirrorHorizontal.current) drawMirrorHorizontal(x, y);
     if (!mirrorVertical.current) drawMirrorVertical(x, y);
-    if (!mirrorHorizontal.current && !mirrorVertical.current) drawMirrorBoth(x, y);
+    if (!mirrorHorizontal.current && !mirrorVertical.current)
+      drawMirrorBoth(x, y);
   };
 
   const selectPixel = (x, y) => {
@@ -61,7 +68,7 @@ export default function GameOfLife() {
     } else {
       x = 40 + (40 - x);
     }
-    selectPixel(x-1, y);
+    selectPixel(x - 1, y);
   };
 
   const drawMirrorVertical = (x, y) => {
@@ -70,7 +77,7 @@ export default function GameOfLife() {
     } else {
       y = 30 + (30 - y);
     }
-    selectPixel(x, y-1);
+    selectPixel(x, y - 1);
   };
 
   const drawMirrorBoth = (x, y) => {
@@ -84,7 +91,7 @@ export default function GameOfLife() {
     } else {
       y = 30 + (30 - y);
     }
-    selectPixel(x-1, y-1);
+    selectPixel(x - 1, y - 1);
   };
   const animate = () => {
     if (animated) return;
@@ -103,7 +110,12 @@ export default function GameOfLife() {
     <div className={"columns"}>
       <div className={"info"}>
         <div className={"info"}>
-          <button className={"settings-button"}>How it Works</button>
+          <a
+            href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life"
+            target="_blank"
+          >
+            <button className={"settings-button"}>How it Works</button>
+          </a>
         </div>
         <button
           className={"settings-button"}
@@ -185,15 +197,19 @@ export default function GameOfLife() {
           type="checkbox"
           ref={mirrorHorizontal}
           value={mirrorHorizontal}
-          onChange={() => (mirrorHorizontal.current = !mirrorHorizontal.current)}
+          onChange={() =>
+            (mirrorHorizontal.current = !mirrorHorizontal.current)
+          }
         />
         <h4>Mirror y: </h4>
         <input
           ref={mirrorVertical}
           value={mirrorVertical}
           type="checkbox"
-          onChange={(e) => {mirrorVertical.current = !mirrorVertical.current; console.log(e.target.checked, "mirrorVertical", mirrorVertical)}}
-          
+          onChange={(e) => {
+            mirrorVertical.current = !mirrorVertical.current;
+            console.log(e.target.checked, "mirrorVertical", mirrorVertical);
+          }}
         />
       </div>
     </div>

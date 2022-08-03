@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import {empty, sand, water, wall, stone, gas, fire, wood} from "./materials"
 export default function FallingSand() {
   const canvasRef = useRef(null);
@@ -91,6 +91,7 @@ export default function FallingSand() {
         <button
           className={"settings-button"}
           onClick={() => {
+            clear(grid, nextGrid, contextRef.current);
             equalize(grid, saveGrid);
             drawGrid(saveGrid, contextRef.current);
           }}

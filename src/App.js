@@ -1,7 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom"; 
 import "./Style.css";
-import GameOfLife from "./GameOfLife/GameOfLife.js";
+import Home from "./Home";
+import GameOfLife from "./GameOfLife/GameOfLife";
 import LangtonsAnt from "./LangtonsAnt/LangtonsAnt";
 import Wolfram from "./Wolfram/Wolfram";
 import FallingSand from "./FallingSand/FallingSand";
@@ -14,6 +15,9 @@ function App() {
       <nav>
         <h1 className={"banner"}>Exploration of Cellular Automata</h1>
         <div className="horizontal">
+        <Link to="/">
+          <button className={"nav-button"}>Home</button>
+          </Link>
           <Link to="/falling-sand">
           <button className={"nav-button"}>Falling Sand</button>
           </Link>
@@ -31,6 +35,7 @@ function App() {
         </div>
       </nav>
       <Routes>
+        <Route path="/" element={<Home/>} />
         <Route path="/langtons-ant" element={<LangtonsAnt id="langtonCanvas"/>} />
         <Route path="/game-of-life" element={<GameOfLife id="conwayCanvas"/>} />
         <Route path="/wolframs" element={<Wolfram id="wolframCanvas"/>} />
