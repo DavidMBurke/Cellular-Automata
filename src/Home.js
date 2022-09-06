@@ -12,13 +12,14 @@ export default function Home() {
         continued work in progress among many other projects which I will
         continue to update and improve. If you see any bugs, or ideas for
         features you would like to see, or are interested in other projects I'm
-        working on, feel free to{" "}
+        working on, feel free to reach out to me on LinkedIn:
+
         <a
           className="imbedded-link"
-          href="https://www.linkedin.com/in/david-burke-b90248203/"
+          href="https://www.linkedin.com/in/David-M-Burke"
           target="_blank"
-        >
-          reach out to me on LinkedIn
+        > <br/> <br/>
+          https://www.linkedin.com/in/David-M-Burke
         </a>
         .
       </h4>
