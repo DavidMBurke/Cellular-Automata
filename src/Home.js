@@ -23,16 +23,6 @@ export default function Home() {
         </a>
         .
       </h4>
-      <h3>Upcoming features:</h3>
-      <h4>
-        Add infographics with rules and explanation of how each applet works on
-        each page to replace links to wiki articles.
-      </h4>
-      <h4>Make save feature persist when you leave the applet.</h4>
-      <h4>
-        Add ability to make custom rules for Langton's Ant, Game of Life, and
-        Falling Sand
-      </h4>
     </div>
   );
 }
