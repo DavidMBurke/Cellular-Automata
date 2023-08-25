@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/Cellular-Automata/static/css/main.54052117.css",
+    "main.js": "/Cellular-Automata/static/js/main.69bb6c4f.js",
+    "static/js/787.20cf12ab.chunk.js": "/Cellular-Automata/static/js/787.20cf12ab.chunk.js",
+    "index.html": "/Cellular-Automata/index.html",
+    "main.54052117.css.map": "/Cellular-Automata/static/css/main.54052117.css.map",
+    "main.69bb6c4f.js.map": "/Cellular-Automata/static/js/main.69bb6c4f.js.map",
+    "787.20cf12ab.chunk.js.map": "/Cellular-Automata/static/js/787.20cf12ab.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.54052117.css",
+    "static/js/main.69bb6c4f.js"
+  ]
+}
